@@ -50,6 +50,8 @@ package.json         devDependencies only, for editor type-checking — bun run 
 tsconfig.json        editor type-checking only, noEmit: true
 _redirects           Netlify-style SPA fallback rule
 vercel.json          Vercel-style SPA fallback rule
+AGENTS.md            tool-agnostic ground rules for whatever coding agent
+                     (Claude Code or otherwise) works on this project later
 ```
 
 `assets/` in this skill directory is a working copy of all of the above — for a

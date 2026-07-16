@@ -48,6 +48,8 @@ package.json         只有 devDependencies，纯供编辑器类型检查用 —
 tsconfig.json         纯编辑器类型检查用，noEmit: true
 _redirects           Netlify 风格的 SPA 回退规则
 vercel.json          Vercel 风格的 SPA 回退规则
+AGENTS.md            通用（不限于 Claude Code）的项目约定说明，供以后任何
+                     在这个项目上工作的编码 agent 阅读
 ```
 
 这个技能目录下的 `assets/` 就是上面这套结构的一份可用副本——搭新项目时，把整个

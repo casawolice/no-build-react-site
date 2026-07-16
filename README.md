@@ -36,6 +36,7 @@ Once installed, Claude Code triggers it automatically whenever you ask for a sta
 ```
 SKILL.md            skill definition Claude Code reads (English, canonical)
 SKILL.zh-CN.md       Chinese translation for human/中文语境 reference
+AGENTS.md            tool-agnostic entry point for non-Claude coding agents
 assets/              working template copied into new projects as-is
   index.html           SPA shell: import map, Tailwind, loader script tags
   src/                 main.tsx, App.tsx, pages/, runtime/loader.js (the TSX compiler)
@@ -43,6 +44,8 @@ assets/              working template copied into new projects as-is
   spa-server.ts        Bun+Hono dev server (SPA fallback + port auto-retry)
   package.json, tsconfig.json   editor-only type-checking, never shipped
   _redirects, vercel.json      SPA fallback rules for history-mode routing
+  AGENTS.md             ships inside every scaffolded project — ground rules
+                        and gotchas for whatever agent works on it later
 references/          docs loaded as needed
   gotchas.md            six non-obvious failure modes and their fixes
   vendor-packages.md    required-vs-optional dependency registry with ready commands
@@ -94,6 +97,7 @@ git clone git@github.com:casawolice/no-build-react-site.git /path/to/project/.cl
 ```
 SKILL.md            Claude Code 读取的技能定义文件（英文，作为触发判断的准绳）
 SKILL.zh-CN.md       中文译本，供人类/中文语境阅读参考
+AGENTS.md            给非 Claude 编码 agent 的通用入口文档
 assets/              新项目会原样拷贝这份可用模板
   index.html           SPA 外壳：import map、Tailwind、loader 脚本标签
   src/                 main.tsx、App.tsx、pages/、runtime/loader.js（浏览器内 TSX 编译器）
@@ -101,6 +105,8 @@ assets/              新项目会原样拷贝这份可用模板
   spa-server.ts        Bun+Hono 开发服务器（SPA 回退 + 端口自动重试）
   package.json, tsconfig.json   仅编辑器类型检查用，从不参与实际交付
   _redirects, vercel.json      history 模式路由所需的 SPA 回退规则
+  AGENTS.md             会跟着一起拷进每个新项目——给以后在这个项目上工作
+                        的任何 agent 看的约定和坑点说明
 references/          按需加载的文档
   gotchas.md            六个不太容易想到的失败模式及对应修法
   vendor-packages.md    必需/可选依赖注册表，附现成命令
