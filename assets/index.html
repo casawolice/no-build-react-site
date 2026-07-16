@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Site</title>
+    <meta name="description" content="Replace with your site's description." />
+    <link rel="icon" href="data:," />
+    <script src="vendor/tailwind.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            // colors, fonts, etc.
+          },
+        },
+      };
+    </script>
+    <!-- Add an entry here for every optional package you vendor (see
+         references/vendor-packages.md), e.g. "react-router-dom": "./vendor/react-router-dom.js" -->
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "./vendor/react.js",
+          "react-dom": "./vendor/react-dom.js",
+          "react-dom/client": "./vendor/react-dom-client.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="src/runtime/loader.js"></script>
+    <script type="module-tsx" src="src/main.tsx"></script>
+  </body>
+</html>

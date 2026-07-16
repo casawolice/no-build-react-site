@@ -1,0 +1,46 @@
+{
+  "skill_name": "no-build-react-site",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "帮我在这个目录下搭一个简单的产品落地页，用 React 写，不要用 Vite/webpack 这些打包工具，最好整个网站能完全离线跑（不依赖任何 CDN）。页面内容随便写点占位文字就行，我主要是要验证这套技术方案能不能跑通。",
+      "expected_output": "A working no-build React project: index.html with an import map pointing at local vendor/ files (not esm.sh/CDN URLs), a src/ directory with .tsx components, a populated vendor/ directory with react/react-dom/react-router-dom/sucrase/tailwind all saved locally, and the site actually renders in a browser with zero network requests to external CDNs.",
+      "files": [],
+      "expectations": [
+        "No build tool (Vite, webpack, esbuild, Parcel, Rollup, Create React App) appears as a dependency or build step anywhere in the project",
+        "index.html contains a <script type=\"importmap\"> whose entries point at local relative paths (e.g. ./vendor/react.js), not remote CDN URLs like esm.sh or unpkg.com",
+        "A local vendor/ (or equivalently named) directory exists containing downloaded copies of React and its runtime dependencies as real files, not just references",
+        "A local dev server was actually started and the page was loaded in a browser, with the agent reporting zero JavaScript console errors",
+        "The agent inspected actual network requests (not just assumed) and confirmed no request was made to any external CDN domain (esm.sh, unpkg.com, cdn.tailwindcss.com, jsdelivr.net, etc.)",
+        "The page renders visible landing-page content (not a blank page or an error message) when loaded"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "我要做一个小型个人作品集网站，在这个目录下，需要三个页面：首页、关于我、作品列表，用 React Router 做路由。技术栈上不想引入 Vite 之类的构建工具，希望之后能直接部署到 Vercel 上。",
+      "expected_output": "A multi-page React site with BrowserRouter and 3 routes wired up in App.tsx, each page as a separate component under src/pages/, a working local dev server with SPA fallback, and a vercel.json rewrite rule present so hard-reloading a sub-route won't 404 on Vercel.",
+      "files": [],
+      "expectations": [
+        "No build tool (Vite, webpack, esbuild, Parcel, Rollup, Create React App) appears as a dependency or build step anywhere in the project",
+        "Three distinct routes exist (home, about, and a portfolio/works listing), each backed by its own component, wired into a React Router configuration (BrowserRouter/Routes/Route or equivalent)",
+        "The agent actually loaded each of the three routes in a browser and confirmed each rendered with no console errors",
+        "The agent confirmed client-side navigation between routes works (URL changes without a full page reload)",
+        "The agent confirmed that hard-reloading (or directly navigating to) a non-root route like /about does not 404, proving the SPA fallback works",
+        "A Vercel-compatible rewrite configuration (vercel.json with a catch-all rewrite to index.html, or equivalent) is present in the project so the app is actually deployable to Vercel with working history-mode routing"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "在这个目录下帮我搭一个纯前端的 React 计数器 demo，要求完全不依赖任何在线 CDN（比如 esm.sh、unpkg 这些），因为这个 demo 要在没有网络的内网环境里给客户演示。搭好之后帮我验证一下真的能在断网情况下正常工作。",
+      "expected_output": "A React counter component (useState) that runs from vendored local dependencies only, verified by actually starting the local server, loading the page in a browser, confirming zero external network requests fire, and the counter increments on click.",
+      "files": [],
+      "expectations": [
+        "No build tool (Vite, webpack, esbuild, Parcel, Rollup, Create React App) appears as a dependency or build step anywhere in the project",
+        "All React runtime dependencies (react, react-dom, and anything needed to run JSX/TSX in the browser) are saved as local files in the project, not referenced by a remote CDN URL anywhere in the served HTML/JS",
+        "The agent actually clicked the counter button in a browser and observed the displayed count increment, proving real React state (useState) is working, not just static HTML",
+        "The agent inspected actual network request logs (not just asserted it from reading code) and confirmed no request was made to any external host — only localhost and/or blob: URLs appear",
+        "The agent's summary explicitly explains what it checked to verify the offline claim, rather than just asserting 'it works offline' without evidence"
+      ]
+    }
+  ]
+}
