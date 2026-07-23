@@ -13,6 +13,7 @@ This isn't a toy pattern — it has shipped a production multi-page, 14-language
 - **Bun + Hono dev server** — SPA history-mode fallback, automatic port retry if the default port is busy.
 - **Two React Router modes** — `BrowserRouter` (clean URLs, needs a host rewrite rule — `_redirects`/`vercel.json` included) or `HashRouter` (`/#/route` URLs, zero host configuration needed, works on any static host unmodified).
 - **Editor-only TypeScript tooling** — `tsconfig.json` + `package.json` devDependencies so VS Code resolves `import React from "react"` with real autocomplete, without any of it touching the production runtime or requiring `node_modules` at deploy time.
+- **An opt-in traditional-build alternative** — a Vite + React + TypeScript build harness (`assets-vite/`, real npm dependencies, `vite build` → `dist/`) for when the zero-build in-browser transpile turns out to be too slow for a given project. It shares the exact same `src/` as the no-build template rather than duplicating it, so converting an existing project between modes is just swapping the build harness, not rewriting application code. This mode is only ever used when you ask for it by name ("use Vite" / "传统构建" / "本地构建") — the skill never switches to it on its own.
 
 ## Why not just use a CDN import map?
 
@@ -37,18 +38,29 @@ Once installed, Claude Code triggers it automatically whenever you ask for a sta
 SKILL.md            skill definition Claude Code reads (English, canonical)
 SKILL.zh-CN.md       Chinese translation for human/中文语境 reference
 AGENTS.md            tool-agnostic entry point for non-Claude coding agents
-assets/              working template copied into new projects as-is
+assets/              working template copied into new projects as-is (default, no-build mode)
   index.html           SPA shell: import map, Tailwind, loader script tags
-  src/                 main.tsx, App.tsx, pages/, runtime/loader.js (the TSX compiler)
+  runtime/loader.js    the in-browser TSX compiler — outside src/ on purpose,
+                       so src/ below is identical between both build modes
+  src/                 main.tsx, App.tsx, pages/ — shared verbatim with assets-vite/
   scripts/vendor-fetch.ts   re-run this to vendor more packages later
   spa-server.ts        Bun+Hono dev server (SPA fallback + port auto-retry)
   package.json, tsconfig.json   editor-only type-checking, never shipped
   _redirects, vercel.json      SPA fallback rules for history-mode routing
   AGENTS.md             ships inside every scaffolded project — ground rules
                         and gotchas for whatever agent works on it later
+assets-vite/         opt-in build harness for traditional-build mode (used only when asked for by name)
+  index.html           Vite's entry HTML — links tailwind.css, loads /src/main.tsx
+  tailwind.css          Tailwind v4 entry (`@import "tailwindcss";`)
+  vite.config.ts       @vitejs/plugin-react + @tailwindcss/vite
+  package.json, tsconfig.json   real dependencies — `npm install` produces a working node_modules
+  _redirects, vercel.json      same SPA fallback rules, independent of bundler choice
+  AGENTS.md             ground rules for this template — no src/ of its own; it
+                        reuses assets/src/ verbatim (see repo AGENTS.md)
 references/          docs loaded as needed
   gotchas.md            six non-obvious failure modes and their fixes
   vendor-packages.md    required-vs-optional dependency registry with ready commands
+  migrate-to-vite.md    converting an existing no-build project to Vite mode in place
   i18n-pattern.md        optional client-side i18n pattern (React context + JSON dicts)
 evals/evals.json    test prompts used to evaluate this skill
 ```
@@ -74,6 +86,7 @@ Start with [`SKILL.md`](./SKILL.md) (or [`SKILL.zh-CN.md`](./SKILL.zh-CN.md) for
 - **Bun + Hono 开发服务器** —— 带 SPA history 模式回退,默认端口被占用时自动重试下一个端口。
 - **两种 React Router 模式** —— `BrowserRouter`(URL 干净,需要托管环境配一条改写规则——`_redirects`/`vercel.json` 已经现成写好)或 `HashRouter`(URL 形如 `/#/route`,不需要任何托管环境配置,扔到任意静态托管上都能直接跑)。
 - **仅供编辑器使用的 TypeScript 配置** —— `tsconfig.json` + `package.json` 的 devDependencies,让 VS Code 能正确解析 `import React from "react"` 并给出真正可用的自动补全,同时完全不影响生产运行时,部署时也不需要 `node_modules`。
+- **可选的传统构建模式** —— 一套 Vite + React + TypeScript 构建外壳(`assets-vite/`，真实的 npm 依赖，`vite build` 产出 `dist/`)，用于零构建的浏览器内转译在某些项目上确实太慢的情况。它跟零构建模板共用同一份 `src/`，不是另外复制一份——所以已有项目在两种模式之间转换时，只是换一层构建外壳，不需要改动应用代码。只有你明确点名要求("用 Vite" / "传统构建" / "本地构建")才会用这套模式——技能本身不会自作主张切换过去。
 
 ### 为什么不直接用 CDN 的 import map 就好了？
 
@@ -98,18 +111,29 @@ git clone git@github.com:casawolice/no-build-react-site.git /path/to/project/.cl
 SKILL.md            Claude Code 读取的技能定义文件（英文，作为触发判断的准绳）
 SKILL.zh-CN.md       中文译本，供人类/中文语境阅读参考
 AGENTS.md            给非 Claude 编码 agent 的通用入口文档
-assets/              新项目会原样拷贝这份可用模板
+assets/              新项目会原样拷贝这份可用模板（默认，零构建模式）
   index.html           SPA 外壳：import map、Tailwind、loader 脚本标签
-  src/                 main.tsx、App.tsx、pages/、runtime/loader.js（浏览器内 TSX 编译器）
+  runtime/loader.js    浏览器内 TSX 编译器——特意放在 src/ 外面，这样下面的
+                       src/ 才能在两种构建模式之间完全一致
+  src/                 main.tsx、App.tsx、pages/——跟 assets-vite/ 原样共用
   scripts/vendor-fetch.ts   以后要本地化更多依赖时重跑这个脚本
   spa-server.ts        Bun+Hono 开发服务器（SPA 回退 + 端口自动重试）
   package.json, tsconfig.json   仅编辑器类型检查用，从不参与实际交付
   _redirects, vercel.json      history 模式路由所需的 SPA 回退规则
   AGENTS.md             会跟着一起拷进每个新项目——给以后在这个项目上工作
                         的任何 agent 看的约定和坑点说明
+assets-vite/         可选的传统构建外壳（只有用户明确点名要求时才会用）
+  index.html           Vite 的入口 HTML——链接 tailwind.css，加载 /src/main.tsx
+  tailwind.css          Tailwind v4 入口（`@import "tailwindcss";`）
+  vite.config.ts       @vitejs/plugin-react + @tailwindcss/vite
+  package.json, tsconfig.json   真实依赖——`npm install` 会装出一份可用的 node_modules
+  _redirects, vercel.json      同样的 SPA 回退规则，跟用哪种打包工具无关
+  AGENTS.md             这套模板专属的约定——它没有自己的 src/，原样复用
+                        assets/src/（见仓库根目录的 AGENTS.md）
 references/          按需加载的文档
   gotchas.md            六个不太容易想到的失败模式及对应修法
   vendor-packages.md    必需/可选依赖注册表，附现成命令
+  migrate-to-vite.md    把一个已有的无构建项目原地转换成 Vite 模式
   i18n-pattern.md        可选的客户端多语言方案（React context + JSON 词典）
 evals/evals.json    用于评测这个技能的测试用例
 ```

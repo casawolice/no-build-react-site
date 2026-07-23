@@ -35,3 +35,24 @@ worth reading before you debug something that "should just work." A copy of
 the load-bearing ones also ships inside `assets/AGENTS.md`, so once a project
 is scaffolded from this template, any agent working in *that* project — this
 one, or otherwise — has them without needing to come back to this repo.
+
+## Opt-in alternative: traditional Vite build
+
+`assets-vite/` is a second template: a normal Vite + React + TypeScript build
+harness (real `npm`/`bun` dependencies, `vite build` → `dist/`). It exists
+for cases where the zero-build in-browser transpile turns out to be too slow
+for a given project. Only use it when explicitly asked for — never switch to
+it on your own judgment, since it gives up the CDN-independence and offline
+guarantees the rest of this repo is built around.
+
+`assets-vite/` has no `src/` of its own — it shares `assets/src/` verbatim,
+because that `src/` already follows two conventions Vite tolerates but
+doesn't require (file extensions on local relative imports, `import React
+from "react"` in every JSX file), which is what makes one `src/` work
+unmodified under either build mode. This is also why converting an existing
+no-build project to Vite mode is cheap: swap the root-level harness files,
+leave `src/` untouched — see `references/migrate-to-vite.md`.
+
+See `SKILL.md`'s "Two scaffold modes" and "Setting up a new project — Vite
+mode" sections for the full walkthrough, and `assets-vite/AGENTS.md` for that
+template's ground rules once scaffolded.

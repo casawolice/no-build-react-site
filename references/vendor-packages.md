@@ -35,7 +35,7 @@ bun run vendor -- --preset core
 | react | `"react": "./vendor/react.js"` |
 | react-dom | `"react-dom": "./vendor/react-dom.js"` |
 | react-dom/client | `"react-dom/client": "./vendor/react-dom-client.js"` |
-| sucrase | (not imported by app code — only `src/runtime/loader.js` uses it) |
+| sucrase | (not imported by app code — only `runtime/loader.js` uses it) |
 
 (`react-dom` itself — not just `/client` — has to be mapped even though your
 own code probably never imports it directly; see `references/gotchas.md` #5

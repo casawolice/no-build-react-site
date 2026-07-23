@@ -7,7 +7,7 @@
 // Bare specifiers (e.g. "react", "react-router-dom") are left untouched and resolved
 // by the <script type="importmap"> in index.html — blob: URL modules still honor the
 // document's import map for bare specifiers.
-import { transform } from "../../vendor/sucrase.js";
+import { transform } from "../vendor/sucrase.js";
 
 const blobUrlCache = new Map(); // absolute source URL -> Promise<blob: URL>
 

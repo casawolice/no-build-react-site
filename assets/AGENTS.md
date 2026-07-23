@@ -2,16 +2,21 @@
 
 This project ships with **zero build step** — no Vite, no webpack, no
 esbuild, no bundler at all. `.tsx`/`.ts` files are fetched by the browser and
-transpiled on the fly by `src/runtime/loader.js`. Don't "helpfully" introduce
+transpiled on the fly by `runtime/loader.js`. Don't "helpfully" introduce
 a bundler; that would undo the whole point of this setup (offline-capable,
-no CDN dependency, nothing to build or watch).
+no CDN dependency, nothing to build or watch). If a real bundler genuinely
+becomes necessary later, that's a mode switch (see the "no-build-react-site"
+skill's Vite template), not something to bolt onto this one — ask before
+doing it.
 
 ## Ground rules
 
 - **Every local relative import needs its file extension written out** —
   `import { Header } from "./components/Header.tsx"`, not `"./Header"`.
   There's no bundler here to probe candidate extensions, so an omitted
-  extension is a silent failed fetch, not a build error.
+  extension is a silent failed fetch, not a build error. (This also keeps
+  `src/` portable to a Vite build unmodified, if this project ever converts —
+  don't drop the extensions even if a linter suggests it looks redundant.)
 - **`package.json` and `tsconfig.json` are editor-only.** They exist so an
   editor can resolve `import React from "react"` and give real autocomplete.
   The browser never reads either file — don't let their presence imply this
